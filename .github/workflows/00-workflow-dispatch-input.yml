@@ -3,8 +3,12 @@ name: 00 - Workflow Dispatch
 on:
   workflow_dispatch:
     inputs:
-      input:
+      Name:
         description: "Test"
+        required: false
+        default: "World"
+      Description:
+        description: "Test for github inputs"
         required: false
         default: "World"
 
@@ -15,5 +19,32 @@ jobs:
       - name: Log input parameters from actions # make sure $InputJsonFromMain is added in main workflow as Env variable like- InputJsonFromMain: ${{ toJSON(github.event.inputs) }}
         shell: pwsh
         run: |
-          $input = "${{ github.event.inputs }}"
-          $input
+          $InputJsonFromMain = ${{ github.event.inputs }}
+          Write-Output $InputJsonFromMain
+          $InputJsonFromMain.GetType()
+          $psObj = $InputJsonFromMain
+
+          $output  = "<table border=1 style='border-collapse: collapse;width:50%;text-align:center'>$newline"
+                    $output += "   <thead>$newline"
+                    $output += "      <tr>$newline"
+          ForEach ($field in $psObj.PSObject.Properties) {                  
+                  $output += "<th>$($field.Name)</th>$newline"
+          }
+          $output += "      </tr>$newline"
+          $output += "   </thead>$newline"
+          $output += "   <tbody>$newline"
+
+          ForEach ($field in $psObj.PSObject.Properties) {  
+                  $output += "      <tr>$newline"                
+                  $output += "<th>$($field.Value)</th>$newline"
+                  $output += "      </tr>$newline"
+          }
+
+          $output += "   </tbody>$newline"
+          $output += "</table>$newline"
+
+
+          echo "<h2>Workflow input parameters</h2>" >> $GITHUB_STEP_SUMMARY       
+          echo "$output" >> $GITHUB_STEP_SUMMARY 
+          echo "<hr>" >> $GITHUB_STEP_SUMMARY 
+          echo "<h2>Workflow Output summary is below</h2>" >> $GITHUB_STEP_SUMMARY  
