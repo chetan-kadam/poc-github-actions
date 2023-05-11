@@ -12,4 +12,6 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     steps:
-      - run: echo Hello ${{ github.event.inputs.input }}
+      - run:|
+      $input = "${{ github.event.inputs }}"
+      $input
