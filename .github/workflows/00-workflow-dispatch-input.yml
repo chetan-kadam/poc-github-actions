@@ -12,6 +12,8 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     steps:
-      - run:|
-      $input = "${{ github.event.inputs }}"
-      $input
+      - name: Log input parameters from actions # make sure $InputJsonFromMain is added in main workflow as Env variable like- InputJsonFromMain: ${{ toJSON(github.event.inputs) }}
+        shell: pwsh
+        run: |
+          $input = "${{ github.event.inputs }}"
+          $input
